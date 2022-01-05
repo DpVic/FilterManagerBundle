@@ -22,11 +22,11 @@ class ViewData implements SerializableInterface
 
     private array $tags = [];
 
-    private array $urlParameters;
+    private array $urlParameters = [];
 
-    private array $resetUrlParameters;
+    private array $resetUrlParameters = [];
 
-    private string $name;
+    private ?string $name = null;
 
 
     public function getName(): string

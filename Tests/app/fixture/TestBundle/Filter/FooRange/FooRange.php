@@ -18,6 +18,7 @@ use ONGR\ElasticsearchBundle\Result\DocumentIterator;
 use ONGR\FilterManagerBundle\Filter\FilterState;
 use ONGR\FilterManagerBundle\Filter\Helper\ViewDataFactoryInterface;
 use ONGR\FilterManagerBundle\Filter\ViewData;
+use ONGR\FilterManagerBundle\Filter\ViewData\RangeAwareViewData;
 use ONGR\FilterManagerBundle\Filter\Widget\AbstractFilter;
 use ONGR\FilterManagerBundle\Search\SearchRequest;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,7 +31,7 @@ class FooRange extends AbstractFilter implements ViewDataFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getState(Request $request)
+    public function getState(Request $request): FilterState
     {
         $state = parent::getState($request);
 
@@ -49,7 +50,7 @@ class FooRange extends AbstractFilter implements ViewDataFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null)
+    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null): void
     {
         if ($state && $state->isActive()) {
             $filter = new RangeQuery($this->getDocumentField(), $state->getValue());
@@ -60,7 +61,7 @@ class FooRange extends AbstractFilter implements ViewDataFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function preProcessSearch(Search $search, Search $relatedSearch, FilterState $state = null)
+    public function preProcessSearch(Search $search, Search $relatedSearch, FilterState $state = null): void
     {
         $stateAgg = new StatsAggregation('range_agg');
         $stateAgg->setField($this->getDocumentField());
@@ -70,17 +71,17 @@ class FooRange extends AbstractFilter implements ViewDataFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createViewData()
+    public function createViewData(): RangeAwareViewData
     {
-        return new ViewData\RangeAwareViewData();
+        return new RangeAwareViewData();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getViewData(DocumentIterator $result, ViewData $data)
+    public function getViewData(DocumentIterator $result, ViewData $data): RangeAwareViewData
     {
-        /** @var $data ViewData\RangeAwareViewData */
+        /** @var $data RangeAwareViewData */
         $data->setMinBounds($result->getAggregation('range_agg')['min']);
         $data->setMaxBounds($result->getAggregation('range_agg')['max']);
 
@@ -90,7 +91,7 @@ class FooRange extends AbstractFilter implements ViewDataFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function isRelated()
+    public function isRelated(): bool
     {
         return true;
     }

@@ -46,7 +46,7 @@ class PagerAwareViewData extends ViewData
     /**
      * @var int of pages to show.
      */
-    private int $numPages;
+    private int $numPages = 0;
 
 
     /**

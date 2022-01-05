@@ -19,8 +19,8 @@ namespace ONGR\FilterManagerBundle\Filter\Helper;
 interface DocumentFieldAwareInterface
 {
 
-    public function setDocumentField(string $documentField);
+    public function setDocumentField(string $documentField = null): void;
 
 
-    public function getDocumentField(): string;
+    public function getDocumentField(): ?string;
 }

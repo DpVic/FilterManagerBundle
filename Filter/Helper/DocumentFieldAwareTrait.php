@@ -19,16 +19,16 @@ namespace ONGR\FilterManagerBundle\Filter\Helper;
 trait DocumentFieldAwareTrait
 {
 
-    private string $documentField;
+    private ?string $documentField = null;
 
 
-    public function getDocumentField(): string
+    public function getDocumentField(): ?string
     {
         return $this->documentField;
     }
 
 
-    public function setDocumentField(string $documentField): void
+    public function setDocumentField(string $documentField = null): void
     {
         $this->documentField = $documentField;
     }

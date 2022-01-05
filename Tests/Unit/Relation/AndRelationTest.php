@@ -12,6 +12,7 @@
 namespace ONGR\FilterManagerBundle\Tests\Unit\Relation;
 
 use ONGR\FilterManagerBundle\Relation\LogicalJoin\AndRelation;
+use ONGR\FilterManagerBundle\Relation\RelationInterface;
 
 class AndRelationTest extends \PHPUnit_Framework_TestCase
 {
@@ -32,11 +33,12 @@ class AndRelationTest extends \PHPUnit_Framework_TestCase
         return $out;
     }
 
+
     /**
      * Test And Relation.
      *
      * @param array $relations
-     * @param bool  $expected
+     * @param bool $expected
      *
      * @dataProvider getTestAndRelationData
      */
@@ -46,7 +48,7 @@ class AndRelationTest extends \PHPUnit_Framework_TestCase
 
         foreach ($relations as $result) {
             if (isset($result)) {
-                $mock = $this->createMock('ONGR\FilterManagerBundle\Relation\RelationInterface');
+                $mock = $this->createMock(RelationInterface::class);
                 $mock->expects($this->any())->method('isRelated')->will($this->returnValue($result));
                 $andRelation->addRelation($mock);
             } else {
