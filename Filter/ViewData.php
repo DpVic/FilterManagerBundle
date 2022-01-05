@@ -18,129 +18,84 @@ use ONGR\FilterManagerBundle\SerializableInterface;
  */
 class ViewData implements SerializableInterface
 {
-    /**
-     * @var FilterState
-     */
-    private $state;
+    private FilterState $state;
 
-    /**
-     * @var array
-     */
-    private $tags = [];
+    private array $tags = [];
 
-    /**
-     * @var array Url parameters representing current filter state.
-     */
-    private $urlParameters;
+    private array $urlParameters;
 
-    /**
-     * @var array Url parameters to reset filter.
-     */
-    private $resetUrlParameters;
+    private array $resetUrlParameters;
 
-    /**
-     * @var string Filter name.
-     */
-    private $name;
+    private string $name;
 
-    /**
-     * @return string
-     */
-    public function getName()
+
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return array
-     */
-    public function getResetUrlParameters()
+
+    public function getResetUrlParameters(): array
     {
         return $this->resetUrlParameters;
     }
 
-    /**
-     * @param array $resetUrlParameters
-     */
-    public function setResetUrlParameters($resetUrlParameters)
+
+    public function setResetUrlParameters(array $resetUrlParameters): void
     {
         $this->resetUrlParameters = $resetUrlParameters;
     }
 
-    /**
-     * @return FilterState
-     */
-    public function getState()
+
+    public function getState(): FilterState
     {
         return $this->state;
     }
 
-    /**
-     * @param FilterState $state
-     */
-    public function setState(FilterState $state)
+
+    public function setState(FilterState $state): void
     {
         $this->state = $state;
     }
 
-    /**
-     * @return array
-     */
-    public function getTags()
+
+    public function getTags(): array
     {
         return $this->tags;
     }
 
-    /**
-     * @param string $tag
-     *
-     * @return bool
-     */
-    public function hasTag($tag)
+
+    public function hasTag(string $tag): bool
     {
         return in_array($tag, $this->tags, true);
     }
 
-    /**
-     * @param array $tags
-     */
-    public function setTags($tags)
-    {
-        if (!is_array($tags)) {
-            $this->tags = array_filter([ $tags ]);
-        }
 
+    public function setTags(array $tags): void
+    {
         $this->tags = $tags;
     }
 
-    /**
-     * @return array
-     */
-    public function getUrlParameters()
+
+    public function getUrlParameters(): array
     {
         return $this->urlParameters;
     }
 
-    /**
-     * @param array $urlParameters
-     */
-    public function setUrlParameters($urlParameters)
+
+    public function setUrlParameters(array $urlParameters): void
     {
         $this->urlParameters = $urlParameters;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getSerializableData()
+
+    public function getSerializableData(): array
     {
         return [
             'name' => $this->name,

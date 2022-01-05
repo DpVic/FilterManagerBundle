@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -11,8 +13,8 @@
 
 namespace ONGR\FilterManagerBundle\Filter\Widget\Pager;
 
-use ONGR\ElasticsearchDSL\Search;
 use ONGR\ElasticsearchBundle\Result\DocumentIterator;
+use ONGR\ElasticsearchDSL\Search;
 use ONGR\FilterManagerBundle\Filter\FilterState;
 use ONGR\FilterManagerBundle\Filter\Helper\ViewDataFactoryInterface;
 use ONGR\FilterManagerBundle\Filter\ViewData;
@@ -31,15 +33,16 @@ class Pager extends AbstractFilter implements ViewDataFactoryInterface
      *
      * @return int
      */
-    public function getCountPerPage()
+    public function getCountPerPage(): int
     {
         return $this->getOption('count_per_page', 12);
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function getState(Request $request)
+    public function getState(Request $request): FilterState
     {
         $state = parent::getState($request);
         // Reset pager with any filter.
@@ -50,10 +53,11 @@ class Pager extends AbstractFilter implements ViewDataFactoryInterface
         return $state;
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null)
+    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null): void
     {
         if ($state && $state->isActive()) {
             $search->setFrom($this->getCountPerPage() * ($state->getValue() - 1));
@@ -62,26 +66,29 @@ class Pager extends AbstractFilter implements ViewDataFactoryInterface
         $search->setSize($this->getCountPerPage());
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function preProcessSearch(Search $search, Search $relatedSearch, FilterState $state = null)
+    public function preProcessSearch(Search $search, Search $relatedSearch, FilterState $state = null): void
     {
         // Nothing to do here.
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function createViewData()
-    {
-        return new PagerAwareViewData();
-    }
 
     /**
      * {@inheritdoc}
      */
-    public function getViewData(DocumentIterator $result, ViewData $data)
+    public function createViewData(): PagerAwareViewData
+    {
+        return new PagerAwareViewData();
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getViewData(DocumentIterator $result, ViewData $data): ViewData
     {
         /** @var ViewData\PagerAwareViewData $data */
 
@@ -96,10 +103,11 @@ class Pager extends AbstractFilter implements ViewDataFactoryInterface
         return $data;
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function isRelated()
+    public function isRelated(): bool
     {
         return false;
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -19,7 +21,8 @@ class IncludeRelation implements RelationInterface
     /**
      * @var string[]
      */
-    private $names;
+    private array $names;
+
 
     /**
      * @param array $names
@@ -29,10 +32,11 @@ class IncludeRelation implements RelationInterface
         $this->names = array_flip($names);
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function isRelated($name)
+    public function isRelated(string $name): bool
     {
         return isset($this->names[$name]);
     }

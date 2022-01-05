@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -21,36 +23,34 @@ class AggregateViewData extends ViewData
     /**
      * @var ChoicesAwareViewData[]
      */
-    private $items = [];
+    private array $items = [];
+
 
     /**
-     * @return ChoicesAwareViewData[]
+     * @return array<int,ChoiceAwareViewData>
      */
-    public function getItems()
+    public function getItems(): array
     {
         return $this->items;
     }
 
+
     /**
-     * @param array $items
+     * @param array<int,ChoicesAwareViewData> $items
      */
-    public function setItems($items)
+    public function setItems(array $items): void
     {
         $this->items = $items;
     }
 
-    /**
-     * @param ChoicesAwareViewData $item
-     */
-    public function addItem(ChoicesAwareViewData $item)
+
+    public function addItem(ChoicesAwareViewData $item): void
     {
         $this->items[] = $item;
     }
 
-    /**
-     * @param callback $callback
-     */
-    public function sortItems($callback = null)
+
+    public function sortItems(callable $callback = null): void
     {
         if ($callback === null) {
             $callback = function ($a, $b) {

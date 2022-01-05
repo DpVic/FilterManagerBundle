@@ -15,10 +15,8 @@ use ONGR\ElasticsearchBundle\Test\AbstractElasticsearchTestCase;
 
 class ManagerControllerTest extends AbstractElasticsearchTestCase
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function getDataArray()
+
+    protected function getDataArray(): array
     {
         return [
             'default' => [
@@ -43,6 +41,7 @@ class ManagerControllerTest extends AbstractElasticsearchTestCase
         ];
     }
 
+
     /**
      * Tests if manager controller works as expected.
      */
@@ -54,6 +53,7 @@ class ManagerControllerTest extends AbstractElasticsearchTestCase
         $this->assertTrue($client->getResponse()->isOk(), 'Client should return 200 code.');
         $this->assertEquals(3, $crawler->filter('ul > li')->count(), 'There should be generated 3 li elements.');
     }
+
 
     /**
      * Test JSON action.
@@ -74,6 +74,7 @@ class ManagerControllerTest extends AbstractElasticsearchTestCase
 
         $this->assertCount(3, $data['documents']);
     }
+
 
     /**
      * Test JSON action with pretty argument.

@@ -12,12 +12,13 @@
 namespace ONGR\FilterManagerBundle\DependencyInjection\Compiler;
 
 use ONGR\FilterManagerBundle\DependencyInjection\ONGRFilterManagerExtension;
+use ONGR\FilterManagerBundle\Search\FilterContainer;
+use ONGR\FilterManagerBundle\Search\FilterManager;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
@@ -50,11 +51,7 @@ class FilterPass implements CompilerPassInterface
                 );
             }
 
-            if (class_exists('Symfony\Component\DependencyInjection\ChildDefinition')) {
-                $definition = new ChildDefinition($filters[($filterOptions['type'])]);
-            } else {
-                $definition = new DefinitionDecorator($filters[($filterOptions['type'])]);
-            }
+            $definition = new ChildDefinition($filters[($filterOptions['type'])]);
             $definition->addMethodCall('setRequestField', [$filterOptions['request_field']]);
             $definition->addMethodCall('setDocumentField', [$filterOptions['document_field']]);
             $definition->addMethodCall('setTags', [$filterOptions['tags']]);
@@ -68,7 +65,7 @@ class FilterPass implements CompilerPassInterface
         }
 
         foreach ($container->getParameter('ongr_filter_manager.managers') as $managerName => $managerOptions) {
-            $filterContainer = new Definition('ONGR\FilterManagerBundle\Search\FilterContainer');
+            $filterContainer = new Definition(FilterContainer::class);
 
             if (isset($managerOptions['filters'])) {
                 foreach ($managerOptions['filters'] as $filter) {
@@ -80,7 +77,7 @@ class FilterPass implements CompilerPassInterface
             }
 
             $managerDefinition = new Definition(
-                'ONGR\FilterManagerBundle\Search\FilterManager',
+                FilterManager::class,
                 [
                     $filterContainer,
                     new Reference($managerOptions['repository']),
@@ -94,15 +91,12 @@ class FilterPass implements CompilerPassInterface
         }
     }
 
+
     /**
      * Adds relation to filter.
      *
-     * @param Definition $definition
-     * @param array      $filter
-     * @param string     $urlType
-     * @param string     $relationType
      */
-    private function addRelation(Definition $definition, $filter, $urlType, $relationType)
+    private function addRelation(Definition $definition, array $filter, string $urlType, string $relationType)
     {
         if (empty($filter['relations'][$urlType][$relationType])) {
             return;

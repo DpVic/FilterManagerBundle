@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -11,14 +13,10 @@
 
 namespace ONGR\FilterManagerBundle\DependencyInjection;
 
-use ONGR\FilterManagerBundle\DependencyInjection\Filter\AbstractFilterFactory;
-use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
  * This is the class that loads and manages bundle configuration.
@@ -28,10 +26,11 @@ class ONGRFilterManagerExtension extends Extension
 
     const PREFIX = 'ongr_filter_manager';
 
+
     /**
      * {@inheritdoc}
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
@@ -43,6 +42,7 @@ class ONGRFilterManagerExtension extends Extension
         $container->setParameter('ongr_filter_manager.managers', $config['managers']);
     }
 
+
     /**
      * Formats filter service id from given name.
      *
@@ -50,10 +50,11 @@ class ONGRFilterManagerExtension extends Extension
      *
      * @return string
      */
-    public static function getFilterId($name)
+    public static function getFilterId(string $name): string
     {
-        return sprintf(self::PREFIX.'.filter.%s', $name);
+        return sprintf(self::PREFIX . '.filter.%s', $name);
     }
+
 
     /**
      * Formats filter manager service id from given name.
@@ -62,8 +63,8 @@ class ONGRFilterManagerExtension extends Extension
      *
      * @return string
      */
-    public static function getFilterManagerId($name = 'default')
+    public static function getFilterManagerId(string $name = 'default'): string
     {
-        return sprintf(self::PREFIX.'.manager.%s', $name);
+        return sprintf(self::PREFIX . '.manager.%s', $name);
     }
 }

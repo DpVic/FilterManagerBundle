@@ -28,7 +28,7 @@ class FieldValue extends AbstractSingleValue
     /**
      * {@inheritdoc}
      */
-    public function getState(Request $request)
+    public function getState(Request $request): FilterState
     {
         $state = new FilterState();
         $state->setActive(true);
@@ -36,10 +36,11 @@ class FieldValue extends AbstractSingleValue
         return $state;
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null)
+    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null): void
     {
         $search->addPostFilter(new TermQuery($this->getDocumentField(), $this->getOption('value')));
     }

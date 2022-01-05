@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -12,17 +14,13 @@
 namespace ONGR\FilterManagerBundle\Filter\Helper;
 
 /**
- * This interface define structure for Elasticsearch field aware filters.
+ * This interface defines structure for Elasticsearch field aware filters.
  */
 interface RequestFieldAwareInterface
 {
-    /**
-     * @param string $requestField
-     */
-    public function setRequestField($requestField);
 
-    /**
-     * @return string
-     */
-    public function getRequestField();
+    public function setRequestField(string $requestField): void;
+
+
+    public function getRequestField(): string;
 }

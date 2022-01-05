@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ONGR\FilterManagerBundle\Filter\Widget\Dynamic;
 
 use ONGR\ElasticsearchDSL\Aggregation\Bucketing\FilterAggregation;
 use ONGR\ElasticsearchDSL\Aggregation\Bucketing\NestedAggregation;
-use ONGR\ElasticsearchDSL\BuilderInterface;
 use ONGR\ElasticsearchDSL\Query\Compound\BoolQuery;
-use ONGR\ElasticsearchDSL\Query\MatchAllQuery;
 use ONGR\ElasticsearchDSL\Query\Joining\NestedQuery;
+use ONGR\ElasticsearchDSL\Query\MatchAllQuery;
 use ONGR\ElasticsearchDSL\Query\TermLevel\TermQuery;
 use ONGR\ElasticsearchDSL\Search;
 use ONGR\FilterManagerBundle\Filter\FilterState;
@@ -20,7 +21,7 @@ class MultiDynamicAggregate extends DynamicAggregate
     /**
      * {@inheritdoc}
      */
-    public function getState(Request $request)
+    public function getState(Request $request): FilterState
     {
         $state = new FilterState();
         $value = $request->get($this->getRequestField());
@@ -34,15 +35,17 @@ class MultiDynamicAggregate extends DynamicAggregate
         return $state;
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null)
+    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null): void
     {
         if ($state && $state->isActive()) {
             $search->addPostFilter($this->getFilterQuery($state->getValue()));
         }
     }
+
 
     /**
      * A method used to add an additional filter to the aggregations
@@ -50,17 +53,16 @@ class MultiDynamicAggregate extends DynamicAggregate
      *
      * @param FilterAggregation $filterAggregation
      * @param NestedAggregation $deepLevelAggregation
-     * @param array             $terms Terms of additional filter
-     * @param string            $aggName
-     *
-     * @return BuilderInterface
+     * @param array $terms Terms of additional filter
+     * @param string $aggName
      */
     protected function addSubFilterAggregation(
-        $filterAggregation,
-        &$deepLevelAggregation,
-        $terms,
-        $aggName
-    ) {
+        FilterAggregation $filterAggregation,
+        NestedAggregation &$deepLevelAggregation,
+        array             $terms,
+        string            $aggName
+    ): void
+    {
         $boolQuery = $this->getFilterQuery($terms);
 
         if ($boolQuery->getQueries() == []) {
@@ -75,15 +77,16 @@ class MultiDynamicAggregate extends DynamicAggregate
         $filterAggregation->addAggregation($innerFilterAggregation);
     }
 
+
     /**
-     * @param string   $key
-     * @param string   $name
+     * @param string $key
+     * @param string $name
      * @param ViewData $data
-     * @param bool     $active True when the choice is active
+     * @param bool $active True when the choice is active
      *
      * @return array
      */
-    protected function getOptionUrlParameters($key, $name, ViewData $data, $active)
+    protected function getOptionUrlParameters(string $key, string $name, ViewData $data, bool $active): array
     {
         $value = $data->getState()->getValue();
         $parameters = $data->getResetUrlParameters();
@@ -104,16 +107,17 @@ class MultiDynamicAggregate extends DynamicAggregate
         return $parameters;
     }
 
+
     /**
      * Returns whether choice with the specified key is active.
      *
-     * @param string   $key
+     * @param string $key
      * @param ViewData $data
-     * @param string   $activeName
+     * @param string $activeName
      *
      * @return bool
      */
-    protected function isChoiceActive($key, ViewData $data, $activeName)
+    protected function isChoiceActive(string $key, ViewData $data, string $activeName): bool
     {
         if ($data->getState()->isActive()) {
             $value = $data->getState()->getValue();
@@ -126,14 +130,15 @@ class MultiDynamicAggregate extends DynamicAggregate
         return false;
     }
 
+
     /**
      * @param array $terms
      *
      * @return BoolQuery
      */
-    private function getFilterQuery($terms)
+    private function getFilterQuery(array $terms): BoolQuery
     {
-        list($path, $field) = explode('>', $this->getDocumentField());
+        [$path, $field] = explode('>', $this->getDocumentField());
         $boolQuery = new BoolQuery();
 
         foreach ($terms as $groupName => $values) {

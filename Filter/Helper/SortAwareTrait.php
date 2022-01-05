@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -18,29 +20,20 @@ trait SortAwareTrait
 {
     use OptionsAwareTrait;
 
-    /**
-     * @var string $default
-     * @return string
-     */
-    public function getSortType($default = '_count')
+
+    public function getSortType(string $default = '_count'):string
     {
         return $this->getOption('sort_type', $default);
     }
 
-    /**
-     * @var string $default
-     * @return string
-     */
-    public function getSortOrder($default = 'asc')
+
+    public function getSortOrder(string $default = 'asc'): string
     {
         return $this->getOption('sort_order', $default);
     }
 
-    /**
-     * @var array $default
-     * @return array
-     */
-    public function getSortPriority($default = [])
+
+    public function getSortPriority(array $default = []): array
     {
         return $this->getOption('sort_priority', $default);
     }

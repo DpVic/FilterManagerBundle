@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -7,6 +10,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace ONGR\FilterManagerBundle\Filter\Widget\Search;
 
 use ONGR\ElasticsearchDSL\BuilderInterface;
@@ -25,7 +29,7 @@ class MatchSearch extends AbstractSingleValue
     /**
      * {@inheritdoc}
      */
-    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null)
+    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null): void
     {
         if ($state && $state->isActive()) {
             if (strpos($this->getDocumentField(), ',') !== false) {
@@ -40,26 +44,27 @@ class MatchSearch extends AbstractSingleValue
         }
     }
 
+
     /**
      * Build possibly nested match part.
      *
-     * @param string      $field
+     * @param string $field
      * @param FilterState $state
      *
      * @return BuilderInterface
      */
-    private function buildMatchPart($field, FilterState $state)
+    private function buildMatchPart(string $field, FilterState $state): BuilderInterface
     {
         if (strpos($field, '>') !== false) {
-            list ($path, $field) = explode('>', $field);
+            [$path, $field] = explode('>', $field);
         }
 
         if (strpos($field, '^') !== false) {
-            list ($field, $boost) = explode('^', $field);
+            [$field, $boost] = explode('^', $field);
         }
 
-        $query =  new MatchQuery($field, $state->getValue(), $this->getOptions());
-        !isset($boost) ? : $query->addParameter('boost', $boost);
+        $query = new MatchQuery($field, $state->getValue(), $this->getOptions());
+        !isset($boost) ?: $query->addParameter('boost', $boost);
 
         if (isset($path)) {
             $query = new NestedQuery($path, $query);

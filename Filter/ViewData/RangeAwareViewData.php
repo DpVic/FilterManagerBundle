@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -63,7 +65,7 @@ class RangeAwareViewData extends ViewData
     /**
      * {@inheritdoc}
      */
-    public function getSerializableData()
+    public function getSerializableData(): array
     {
         $data = parent::getSerializableData();
 

@@ -1,5 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
+namespace ONGR\FilterManagerBundle\Tests\app;
+
 /*
  * This file is part of the ONGR package.
  *
@@ -9,12 +13,12 @@
  * file that was distributed with this source code.
  */
 
-use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\HttpKernel\Kernel;
 
 class AppKernel extends Kernel
 {
-    public function registerBundles()
+    public function registerBundles(): array
     {
         return [
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
@@ -22,12 +26,13 @@ class AppKernel extends Kernel
             new ONGR\ElasticsearchBundle\ONGRElasticsearchBundle(),
             new ONGR\FilterManagerBundle\ONGRFilterManagerBundle(),
             new ONGR\FilterManagerBundle\Tests\app\fixture\TestBundle\TestBundle(),
-            new \JMS\SerializerBundle\JMSSerializerBundle(),
+            new JMS\SerializerBundle\JMSSerializerBundle(),
         ];
     }
 
+
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
+        $loader->load(__DIR__ . '/config/config_' . $this->getEnvironment() . '.yml');
     }
 }

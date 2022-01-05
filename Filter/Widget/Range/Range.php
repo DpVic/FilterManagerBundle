@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -11,10 +13,10 @@
 
 namespace ONGR\FilterManagerBundle\Filter\Widget\Range;
 
+use ONGR\ElasticsearchBundle\Result\DocumentIterator;
 use ONGR\ElasticsearchDSL\Aggregation\Bucketing\FilterAggregation;
 use ONGR\ElasticsearchDSL\Aggregation\Metric\StatsAggregation;
 use ONGR\ElasticsearchDSL\Search;
-use ONGR\ElasticsearchBundle\Result\DocumentIterator;
 use ONGR\FilterManagerBundle\Filter\FilterState;
 use ONGR\FilterManagerBundle\Filter\ViewData;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +29,7 @@ class Range extends AbstractRange
     /**
      * {@inheritdoc}
      */
-    public function getState(Request $request)
+    public function getState(Request $request): FilterState
     {
         $state = parent::getState($request);
 
@@ -54,10 +56,11 @@ class Range extends AbstractRange
         return $state;
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function preProcessSearch(Search $search, Search $relatedSearch, FilterState $state = null)
+    public function preProcessSearch(Search $search, Search $relatedSearch, FilterState $state = null): void
     {
         $aggregation = new StatsAggregation($state->getName());
         $aggregation->setField($this->getDocumentField());
@@ -72,10 +75,11 @@ class Range extends AbstractRange
         $search->addAggregation($aggregation);
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function getViewData(DocumentIterator $result, ViewData $data)
+    public function getViewData(DocumentIterator $result, ViewData $data): ViewData
     {
         $name = $data->getState()->getName();
         $aggregation = $result->getAggregation($name);

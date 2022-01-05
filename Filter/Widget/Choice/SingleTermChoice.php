@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -12,16 +14,16 @@
 namespace ONGR\FilterManagerBundle\Filter\Widget\Choice;
 
 use ONGR\ElasticsearchBundle\Result\Aggregation\AggregationValue;
+use ONGR\ElasticsearchBundle\Result\DocumentIterator;
 use ONGR\ElasticsearchDSL\Aggregation\Bucketing\FilterAggregation;
 use ONGR\ElasticsearchDSL\Aggregation\Bucketing\TermsAggregation;
 use ONGR\ElasticsearchDSL\Query\TermLevel\TermQuery;
 use ONGR\ElasticsearchDSL\Search;
-use ONGR\ElasticsearchBundle\Result\DocumentIterator;
 use ONGR\FilterManagerBundle\Filter\FilterState;
 use ONGR\FilterManagerBundle\Filter\Helper\SortAwareTrait;
 use ONGR\FilterManagerBundle\Filter\Helper\ViewDataFactoryInterface;
-use ONGR\FilterManagerBundle\Filter\ViewData\ChoicesAwareViewData;
 use ONGR\FilterManagerBundle\Filter\ViewData;
+use ONGR\FilterManagerBundle\Filter\ViewData\ChoicesAwareViewData;
 use ONGR\FilterManagerBundle\Filter\Widget\AbstractFilter;
 use ONGR\FilterManagerBundle\Search\SearchRequest;
 
@@ -32,20 +34,19 @@ class SingleTermChoice extends AbstractFilter implements ViewDataFactoryInterfac
 {
     use SortAwareTrait;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null)
+
+    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null): void
     {
         if ($state && $state->isActive()) {
             $search->addPostFilter(new TermQuery($this->getDocumentField(), $state->getValue()));
         }
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function preProcessSearch(Search $search, Search $relatedSearch, FilterState $state = null)
+    public function preProcessSearch(Search $search, Search $relatedSearch, FilterState $state = null): void
     {
         $name = $state ? $state->getName() : $this->getDocumentField();
         $aggregation = new TermsAggregation($name, $this->getDocumentField());
@@ -76,18 +77,20 @@ class SingleTermChoice extends AbstractFilter implements ViewDataFactoryInterfac
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function createViewData()
-    {
-        return new ChoicesAwareViewData();
-    }
 
     /**
      * {@inheritdoc}
      */
-    public function getViewData(DocumentIterator $result, ViewData $data)
+    public function createViewData(): ChoicesAwareViewData
+    {
+        return new ChoicesAwareViewData();
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getViewData(DocumentIterator $result, ViewData $data): ViewData
     {
         /** @var ChoicesAwareViewData $data */
 
@@ -136,23 +139,17 @@ class SingleTermChoice extends AbstractFilter implements ViewDataFactoryInterfac
         return $data;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function isRelated()
+
+    public function isRelated(): bool
     {
         return true;
     }
 
+
     /**
      * Adds prioritized choices.
-     *
-     * @param array                $unsortedChoices
-     * @param ChoicesAwareViewData $data
-     *
-     * @return array
      */
-    protected function addPriorityChoices(array $unsortedChoices, ChoicesAwareViewData $data)
+    protected function addPriorityChoices(array $unsortedChoices, ChoicesAwareViewData $data): array
     {
         foreach ($this->getSortPriority() as $name) {
             if (array_key_exists($name, $unsortedChoices)) {
@@ -164,15 +161,11 @@ class SingleTermChoice extends AbstractFilter implements ViewDataFactoryInterfac
         return $unsortedChoices;
     }
 
+
     /**
      * Fetches buckets from search results.
-     *
-     * @param DocumentIterator $result Search results.
-     * @param string           $name   Filter name.
-     *
-     * @return AggregationValue.
      */
-    protected function fetchAggregation(DocumentIterator $result, $name)
+    protected function fetchAggregation(DocumentIterator $result, string $name): AggregationValue
     {
         $aggregation = $result->getAggregation($name);
         if (isset($aggregation)) {
@@ -183,13 +176,8 @@ class SingleTermChoice extends AbstractFilter implements ViewDataFactoryInterfac
         return $aggregation->find($name);
     }
 
-    /**
-     * @param string   $key
-     * @param ViewData $data
-     *
-     * @return array
-     */
-    protected function getOptionUrlParameters($key, ViewData $data)
+
+    protected function getOptionUrlParameters(string $key, ViewData $data): array
     {
         $parameters = $data->getResetUrlParameters();
         $parameters[$this->getRequestField()] = $key;
@@ -197,28 +185,20 @@ class SingleTermChoice extends AbstractFilter implements ViewDataFactoryInterfac
         return $parameters;
     }
 
+
     /**
      * Returns url with selected term disabled.
-     *
-     * @param string   $key
-     * @param ViewData $data
-     *
-     * @return array
      */
-    protected function getUnsetUrlParameters($key, ViewData $data)
+    protected function getUnsetUrlParameters(string $key, ViewData $data): array
     {
         return $data->getResetUrlParameters();
     }
 
+
     /**
      * Returns whether choice with the specified key is active.
-     *
-     * @param string   $key
-     * @param ViewData $data
-     *
-     * @return bool
      */
-    protected function isChoiceActive($key, ViewData $data)
+    protected function isChoiceActive(string $key, ViewData $data): bool
     {
         return $data->getState()->isActive() && $data->getState()->getValue() == $key;
     }

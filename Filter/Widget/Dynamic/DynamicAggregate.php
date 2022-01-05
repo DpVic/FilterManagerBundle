@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -12,21 +14,23 @@
 namespace ONGR\FilterManagerBundle\Filter\Widget\Dynamic;
 
 use ONGR\ElasticsearchBundle\Result\Aggregation\AggregationValue;
+use ONGR\ElasticsearchBundle\Result\DocumentIterator;
 use ONGR\ElasticsearchDSL\Aggregation\Bucketing\FilterAggregation;
 use ONGR\ElasticsearchDSL\Aggregation\Bucketing\NestedAggregation;
 use ONGR\ElasticsearchDSL\Aggregation\Bucketing\TermsAggregation;
 use ONGR\ElasticsearchDSL\BuilderInterface;
 use ONGR\ElasticsearchDSL\Query\Compound\BoolQuery;
-use ONGR\ElasticsearchDSL\Query\MatchAllQuery;
 use ONGR\ElasticsearchDSL\Query\Joining\NestedQuery;
+use ONGR\ElasticsearchDSL\Query\MatchAllQuery;
 use ONGR\ElasticsearchDSL\Query\TermLevel\TermQuery;
 use ONGR\ElasticsearchDSL\Search;
-use ONGR\ElasticsearchBundle\Result\DocumentIterator;
 use ONGR\FilterManagerBundle\Filter\FilterState;
 use ONGR\FilterManagerBundle\Filter\Helper\SortAwareTrait;
 use ONGR\FilterManagerBundle\Filter\Helper\ViewDataFactoryInterface;
-use ONGR\FilterManagerBundle\Filter\ViewData\AggregateViewData;
 use ONGR\FilterManagerBundle\Filter\ViewData;
+use ONGR\FilterManagerBundle\Filter\ViewData\AggregateViewData;
+use ONGR\FilterManagerBundle\Filter\ViewData\ChoiceAwareViewData;
+use ONGR\FilterManagerBundle\Filter\ViewData\ChoicesAwareViewData;
 use ONGR\FilterManagerBundle\Filter\Widget\AbstractFilter;
 use ONGR\FilterManagerBundle\Search\SearchRequest;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,23 +45,25 @@ class DynamicAggregate extends AbstractFilter implements ViewDataFactoryInterfac
     /**
      * @return string
      */
-    public function getNameField()
+    public function getNameField(): string
     {
         return $this->getOption('name_field', false);
     }
 
+
     /**
      * @return bool
      */
-    public function getShowZeroChoices()
+    public function getShowZeroChoices(): bool
     {
         return $this->getOption('show_zero_choices', false);
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function getState(Request $request)
+    public function getState(Request $request): FilterState
     {
         $state = new FilterState();
         $value = $request->get($this->getRequestField());
@@ -71,12 +77,13 @@ class DynamicAggregate extends AbstractFilter implements ViewDataFactoryInterfac
         return $state;
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null)
+    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null): void
     {
-        list($path, $field) = explode('>', $this->getDocumentField());
+        [$path, $field] = explode('>', $this->getDocumentField());
 
         if ($state && $state->isActive()) {
             $boolQuery = new BoolQuery();
@@ -95,12 +102,13 @@ class DynamicAggregate extends AbstractFilter implements ViewDataFactoryInterfac
         }
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function preProcessSearch(Search $search, Search $relatedSearch, FilterState $state = null)
+    public function preProcessSearch(Search $search, Search $relatedSearch, FilterState $state = null): void
     {
-        list($path, $field) = explode('>', $this->getDocumentField());
+        [$path, $field] = explode('>', $this->getDocumentField());
         $filter = !empty($filter = $relatedSearch->getPostFilters()) ? $filter : new MatchAllQuery();
         $aggregation = new NestedAggregation($state->getName(), $path);
         $nameAggregation = new TermsAggregation('name', $this->getNameField());
@@ -142,18 +150,20 @@ class DynamicAggregate extends AbstractFilter implements ViewDataFactoryInterfac
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function createViewData()
-    {
-        return new AggregateViewData();
-    }
 
     /**
      * {@inheritdoc}
      */
-    public function getViewData(DocumentIterator $result, ViewData $data)
+    public function createViewData(): AggregateViewData
+    {
+        return new AggregateViewData();
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getViewData(DocumentIterator $result, ViewData $data): ViewData
     {
         $unsortedChoices = [];
         $activeNames = $data->getState()->isActive() ? array_keys($data->getState()->getValue()) : [];
@@ -195,24 +205,26 @@ class DynamicAggregate extends AbstractFilter implements ViewDataFactoryInterfac
         return $data;
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function isRelated()
+    public function isRelated(): bool
     {
         return true;
     }
 
+
     /**
      * Fetches buckets from search results.
      *
-     * @param DocumentIterator $result     Search results.
-     * @param string           $filterName Filter name.
-     * @param array            $values     Values from the state object
+     * @param DocumentIterator $result Search results.
+     * @param string $filterName Filter name.
+     * @param array $values Values from the state object
      *
      * @return array Buckets.
      */
-    protected function fetchAggregation(DocumentIterator $result, $filterName, $values)
+    protected function fetchAggregation(DocumentIterator $result, string $filterName, array $values): array
     {
         $data = [];
         $values = empty($values) ? [] : $values;
@@ -227,24 +239,24 @@ class DynamicAggregate extends AbstractFilter implements ViewDataFactoryInterfac
         return $data;
     }
 
+
     /**
      * A method used to add an additional filter to the aggregations
      * in preProcessSearch
      *
      * @param FilterAggregation $filterAggregation
      * @param NestedAggregation $deepLevelAggregation
-     * @param array             $terms Terms of additional filter
-     * @param string            $aggName
-     *
-     * @return BuilderInterface
+     * @param array $terms Terms of additional filter
+     * @param string $aggName
      */
     protected function addSubFilterAggregation(
-        $filterAggregation,
-        &$deepLevelAggregation,
-        $terms,
-        $aggName
-    ) {
-        list($path, $field) = explode('>', $this->getDocumentField());
+        FilterAggregation $filterAggregation,
+        NestedAggregation &$deepLevelAggregation,
+        array             $terms,
+        string            $aggName
+    ): void
+    {
+        [$path, $field] = explode('>', $this->getDocumentField());
         $boolQuery = new BoolQuery();
 
         foreach ($terms as $groupName => $term) {
@@ -260,15 +272,16 @@ class DynamicAggregate extends AbstractFilter implements ViewDataFactoryInterfac
         $filterAggregation->addAggregation($innerFilterAggregation);
     }
 
+
     /**
-     * @param string   $key
-     * @param string   $name
+     * @param string $key
+     * @param string $name
      * @param ViewData $data
-     * @param bool     $active True when the choice is active
+     * @param bool $active True when the choice is active
      *
      * @return array
      */
-    protected function getOptionUrlParameters($key, $name, ViewData $data, $active)
+    protected function getOptionUrlParameters(string $key, string $name, ViewData $data, bool $active): array
     {
         $value = $data->getState()->getValue();
         $parameters = $data->getResetUrlParameters();
@@ -289,16 +302,17 @@ class DynamicAggregate extends AbstractFilter implements ViewDataFactoryInterfac
         return $parameters;
     }
 
+
     /**
      * Returns whether choice with the specified key is active.
      *
-     * @param string   $key
+     * @param string $key
      * @param ViewData $data
-     * @param string   $activeName
+     * @param string $activeName
      *
      * @return bool
      */
-    protected function isChoiceActive($key, ViewData $data, $activeName)
+    protected function isChoiceActive(string $key, ViewData $data, string $activeName): bool
     {
         if ($data->getState()->isActive()) {
             $value = $data->getState()->getValue();
@@ -311,16 +325,17 @@ class DynamicAggregate extends AbstractFilter implements ViewDataFactoryInterfac
         return false;
     }
 
+
     /**
      * Forms $unsortedChoices array with all possible choices.
      * 0 is assigned to the document count of the choices.
      *
      * @param DocumentIterator $result
-     * @param ViewData         $data
+     * @param ViewData $data
      *
      * @return array
      */
-    protected function formInitialUnsortedChoices($result, $data)
+    protected function formInitialUnsortedChoices(DocumentIterator $result, ViewData $data): array
     {
         $unsortedChoices = [];
         $urlParameters = array_merge(
@@ -341,16 +356,23 @@ class DynamicAggregate extends AbstractFilter implements ViewDataFactoryInterfac
         return $unsortedChoices;
     }
 
+
     /**
      * @param AggregateViewData $data
-     * @param string            $name
-     * @param string            $activeName
-     * @param AggregationValue  $bucket
-     * @param array             $urlParameters
+     * @param string $name
+     * @param string $activeName
+     * @param AggregationValue $bucket
+     * @param array|null $urlParameters
      *
-     * @return ViewData\ChoiceAwareViewData
+     * @return ChoiceAwareViewData
      */
-    protected function createChoice($data, $name, $activeName, $bucket, $urlParameters = null)
+    protected function createChoice(
+        AggregateViewData $data,
+        string            $name,
+        string            $activeName,
+        AggregationValue  $bucket,
+        array             $urlParameters = null
+    ): ChoiceAwareViewData
     {
         $active = $this->isChoiceActive($bucket['key'], $data, $activeName);
 
@@ -358,7 +380,7 @@ class DynamicAggregate extends AbstractFilter implements ViewDataFactoryInterfac
             $urlParameters = $this->getOptionUrlParameters($bucket['key'], $name, $data, $active);
         }
 
-        $choice = new ViewData\ChoiceAwareViewData();
+        $choice = new ChoiceAwareViewData();
         $choice->setLabel($bucket['key']);
         $choice->setCount($bucket['doc_count']);
         $choice->setActive($active);
@@ -367,14 +389,15 @@ class DynamicAggregate extends AbstractFilter implements ViewDataFactoryInterfac
         return $choice;
     }
 
+
     /**
      * @param AggregateViewData $data
-     * @param string            $name
-     * @param ViewData\ChoiceAwareViewData[] $choices
+     * @param string $name
+     * @param ChoiceAwareViewData[] $choices
      */
-    protected function addViewDataItem($data, $name, $choices)
+    protected function addViewDataItem(AggregateViewData $data, string $name, array $choices): void
     {
-        $choiceViewData = new ViewData\ChoicesAwareViewData();
+        $choiceViewData = new ChoicesAwareViewData();
         $choiceViewData->setName($name);
         $choiceViewData->setChoices($choices);
         $choiceViewData->setUrlParameters([]);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -16,23 +18,17 @@ namespace ONGR\FilterManagerBundle\Filter\Helper;
  */
 trait DocumentFieldAwareTrait
 {
-    /**
-     * @var string
-     */
-    private $documentField;
 
-    /**
-     * @return string
-     */
-    public function getDocumentField()
+    private string $documentField;
+
+
+    public function getDocumentField(): string
     {
         return $this->documentField;
     }
 
-    /**
-     * @param string $documentField
-     */
-    public function setDocumentField($documentField)
+
+    public function setDocumentField(string $documentField): void
     {
         $this->documentField = $documentField;
     }

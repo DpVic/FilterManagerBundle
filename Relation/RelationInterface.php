@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -23,5 +25,5 @@ interface RelationInterface
      *
      * @return bool
      */
-    public function isRelated($name);
+    public function isRelated(string $name): bool;
 }

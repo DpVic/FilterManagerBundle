@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -26,7 +28,7 @@ class MultiTermChoice extends SingleTermChoice
     /**
      * {@inheritdoc}
      */
-    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null)
+    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null): void
     {
         if ($state && $state->isActive()) {
             $filter = new TermsQuery($this->getDocumentField(), $state->getValue());
@@ -34,10 +36,8 @@ class MultiTermChoice extends SingleTermChoice
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getState(Request $request)
+
+    public function getState(Request $request): FilterState
     {
         $value = $request->get($this->getRequestField());
 
@@ -56,7 +56,7 @@ class MultiTermChoice extends SingleTermChoice
      *
      * @return array
      */
-    protected function getOptionUrlParameters($key, ViewData $data)
+    protected function getOptionUrlParameters(string $key, ViewData $data): array
     {
         $parameters = $data->getUrlParameters();
 
@@ -72,7 +72,7 @@ class MultiTermChoice extends SingleTermChoice
     /**
      * {@inheritdoc}
      */
-    protected function getUnsetUrlParameters($key, ViewData $data)
+    protected function getUnsetUrlParameters(string $key, ViewData $data): array
     {
         $parameters = $data->getUrlParameters();
 
@@ -90,7 +90,7 @@ class MultiTermChoice extends SingleTermChoice
     /**
      * {@inheritdoc}
      */
-    protected function isChoiceActive($key, ViewData $data)
+    protected function isChoiceActive(string $key, ViewData $data): bool
     {
         return $data->getState()->isActive() && in_array($key, $data->getState()->getValue());
     }

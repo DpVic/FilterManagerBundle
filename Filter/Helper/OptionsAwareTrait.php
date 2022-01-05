@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -19,41 +21,34 @@ trait OptionsAwareTrait
     /**
      * @var array
      */
-    private $options = [];
+    private array $options = [];
+
 
     /**
      * Checks if parameter exists.
-     *
-     * @param string $name
-     *
-     * @return bool
      */
-    public function hasOption($name)
+    public function hasOption($name): bool
     {
         return isset($this->options[$name]);
     }
 
+
     /**
      * Removes parameter.
-     *
-     * @param string $name
      */
-    public function removeOption($name)
+    public function removeOption(string $name): void
     {
         if ($this->hasOption($name)) {
             unset($this->options[$name]);
         }
     }
 
+
     /**
      * Returns one parameter by it's name.
-     *
-     * @param string $name
-     * @param string $default
-     *
      * @return mixed
      */
-    public function getOption($name, $default = null)
+    public function getOption(string $name, $default = null)
     {
         if ($this->hasOption($name)) {
             return $this->options[$name];
@@ -61,31 +56,31 @@ trait OptionsAwareTrait
         return $default;
     }
 
+
     /**
      * Returns an array of all options.
      *
-     * @return array
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
 
+
     /**
-     * @param string                 $name
+     * @param string $name
      * @param array|string|\stdClass $value
      */
-    public function addOption($name, $value)
+    public function addOption($name, $value): void
     {
         $this->options[$name] = $value;
     }
 
+
     /**
      * Sets an array of options.
-     *
-     * @param array $options
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->options = $options;
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -27,23 +29,25 @@ abstract class AbstractRange extends AbstractFilter implements ViewDataFactoryIn
     /**
      * @return bool
      */
-    public function isInclusive()
+    public function isInclusive(): bool
     {
         return $this->getOption('inclusive', false);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function createViewData()
-    {
-        return new RangeAwareViewData();
-    }
 
     /**
      * {@inheritdoc}
      */
-    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null)
+    public function createViewData(): RangeAwareViewData
+    {
+        return new RangeAwareViewData();
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null): void
     {
         if ($state && $state->isActive()) {
             $filter = new RangeQuery($this->getDocumentField(), $state->getValue());
@@ -51,10 +55,11 @@ abstract class AbstractRange extends AbstractFilter implements ViewDataFactoryIn
         }
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function isRelated()
+    public function isRelated(): bool
     {
         return true;
     }

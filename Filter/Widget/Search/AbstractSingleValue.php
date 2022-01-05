@@ -25,7 +25,7 @@ abstract class AbstractSingleValue extends AbstractFilter
     /**
      * {@inheritdoc}
      */
-    public function getViewData(DocumentIterator $result, ViewData $data)
+    public function getViewData(DocumentIterator $result, ViewData $data): ViewData
     {
         return $data;
     }
@@ -33,7 +33,7 @@ abstract class AbstractSingleValue extends AbstractFilter
     /**
      * {@inheritdoc}
      */
-    public function preProcessSearch(Search $search, Search $relatedSearch, FilterState $state = null)
+    public function preProcessSearch(Search $search, Search $relatedSearch, FilterState $state = null): void
     {
         // Nothing more to do here.
     }

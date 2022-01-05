@@ -15,10 +15,12 @@ use ONGR\FilterManagerBundle\Controller\ManagerController;
 use ONGR\FilterManagerBundle\DependencyInjection\ONGRFilterManagerExtension;
 use ONGR\FilterManagerBundle\Search\FilterManager;
 use ONGR\FilterManagerBundle\Search\SearchResponse;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Bridge\Twig\TwigEngine;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 /**
  * Class ManagerControllerTest
@@ -36,24 +38,21 @@ class ManagerControllerTest extends \PHPUnit_Framework_TestCase
         $searchResponseMock = $this
             ->getMockBuilder(SearchResponse::class)
             ->disableOriginalConstructor()
-            ->getMock()
-        ;
+            ->getMock();
 
         $filterManagerMock = $this
             ->getMockBuilder(FilterManager::class)
             ->disableOriginalConstructor()
             ->setMethods(['handleRequest'])
-            ->getMock()
-        ;
+            ->getMock();
 
         $filterManagerMock
             ->expects($this->once())
             ->method('handleRequest')
             ->with(new Request())
-            ->will($this->returnValue($searchResponseMock))
-        ;
+            ->will($this->returnValue($searchResponseMock));
 
-        $templatingMock = $this->createMock(EngineInterface::class);
+        $templatingMock = $this->createMock(TwigEngine::class);
         $templatingMock
             ->expects($this->once())
             ->method('render')
@@ -61,8 +60,7 @@ class ManagerControllerTest extends \PHPUnit_Framework_TestCase
                 'template:name.html.twig',
                 $this->arrayHasKey('filter_manager')
             )
-            ->will($this->returnValue(new Response()))
-        ;
+            ->will($this->returnValue(new Response()));
 
         $container->set(ONGRFilterManagerExtension::getFilterManagerId('default'), $filterManagerMock);
         $container->set('templating', $templatingMock);

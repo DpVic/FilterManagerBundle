@@ -14,6 +14,7 @@ namespace ONGR\FilterManagerBundle\Tests\Unit\Twig;
 use ONGR\FilterManagerBundle\Filter\ViewData\PagerAwareViewData;
 use ONGR\FilterManagerBundle\Twig\PagerExtension;
 use Symfony\Component\Routing\RouterInterface;
+use Twig\Environment;
 
 class PagerExtensionTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,6 +28,7 @@ class PagerExtensionTest extends \PHPUnit_Framework_TestCase
      */
     private $pagerExtension;
 
+
     /**
      * Before a test method is run, a template method called setUp() is invoked.
      */
@@ -35,6 +37,7 @@ class PagerExtensionTest extends \PHPUnit_Framework_TestCase
         $this->router = $this->createMock('Symfony\Component\Routing\RouterInterface');
         $this->pagerExtension = new PagerExtension($this->router);
     }
+
 
     /**
      * Tests getFunctions.
@@ -45,6 +48,7 @@ class PagerExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($result);
     }
 
+
     /**
      * Tests getName.
      */
@@ -54,13 +58,14 @@ class PagerExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($result);
     }
 
+
     /**
      * Tests Paginate.
      */
     public function testPaginate()
     {
-        /** @var \Twig_Environment|\PHPUnit_Framework_MockObject_MockObject $managerMock */
-        $twigEnvironment = $this->getMockBuilder('\Twig_Environment')
+        /** @var Environment|\PHPUnit_Framework_MockObject_MockObject $managerMock */
+        $twigEnvironment = $this->getMockBuilder(Environment::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -81,6 +86,7 @@ class PagerExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($result);
     }
 
+
     /**
      * Data provider for testPath test.
      *
@@ -96,11 +102,12 @@ class PagerExtensionTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
+
     /**
      * Tests path.
      *
      * @param array $parameters
-     * @param int   $page
+     * @param int $page
      *
      * @dataProvider testPathDataProvider
      */

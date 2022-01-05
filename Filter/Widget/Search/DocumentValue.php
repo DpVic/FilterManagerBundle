@@ -29,7 +29,7 @@ class DocumentValue extends AbstractSingleValue
     /**
      * {@inheritdoc}
      */
-    public function getState(Request $request)
+    public function getState(Request $request): FilterState
     {
         $state = new FilterState();
         $document = $request->get('document');
@@ -49,10 +49,11 @@ class DocumentValue extends AbstractSingleValue
         return $state;
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null)
+    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null): void
     {
         $search->addPostFilter(new TermQuery($this->getDocumentField(), $state->getValue()));
     }

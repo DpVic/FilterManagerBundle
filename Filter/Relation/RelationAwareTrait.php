@@ -18,44 +18,32 @@ use ONGR\FilterManagerBundle\Relation\RelationInterface;
  */
 trait RelationAwareTrait
 {
-    /**
-     * @var RelationInterface|null
-     */
-    private $searchRelation;
 
-    /**
-     * @var RelationInterface|null
-     */
-    private $resetRelation;
+    private ?RelationInterface $searchRelation = null;
 
-    /**
-     * @return null|RelationInterface
-     */
-    public function getResetRelation()
+
+    private ?RelationInterface $resetRelation = null;
+
+
+    public function getResetRelation(): ?RelationInterface
     {
         return $this->resetRelation;
     }
 
-    /**
-     * @param null|RelationInterface $resetRelation
-     */
-    public function setResetRelation($resetRelation)
+
+    public function setResetRelation(RelationInterface $resetRelation = null): void
     {
         $this->resetRelation = $resetRelation;
     }
 
-    /**
-     * @return null|RelationInterface
-     */
-    public function getSearchRelation()
+
+    public function getSearchRelation(): ?RelationInterface
     {
         return $this->searchRelation;
     }
 
-    /**
-     * @param null|RelationInterface $searchRelation
-     */
-    public function setSearchRelation($searchRelation)
+
+    public function setSearchRelation(RelationInterface $searchRelation): void
     {
         $this->searchRelation = $searchRelation;
     }

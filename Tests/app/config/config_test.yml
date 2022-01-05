@@ -8,6 +8,13 @@ imports:
     - { resource: filters/search.yml }
     - { resource: filters/sort.yml }
 
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+    paths:
+        'Tests/app/templates': 'App'
+
 framework:
     secret: "supersecret"
     translator: { fallbacks: [en] }

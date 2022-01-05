@@ -11,8 +11,9 @@
         }
     ],
     "require": {
-        "php": "^7.0",
-        "symfony/symfony": "3.4|~4",
+        "ext-json": "*",
+        "php": "^7.4 || ^8.0",
+        "symfony/symfony": "^4|^5",
         "ongr/elasticsearch-bundle": "~5.0",
         "jms/serializer-bundle": "^2.0"
     },
@@ -23,10 +24,17 @@
         "satooshi/php-coveralls": "~1.0"
     },
     "autoload": {
-        "psr-4": { "ONGR\\FilterManagerBundle\\": "" },
-        "exclude-from-classmap": ["/Test/", "/Tests/"]
+      "psr-4": { "ONGR\\FilterManagerBundle\\": "" },
+      "exclude-from-classmap": ["/Test/", "/Tests/"]
     },
-    "minimum-stability": "dev",
+    "autoload-dev": {
+      "files": [
+        "Tests/app/AppKernel.php"
+      ],
+      "psr-4": {
+        "App\\": "\\Tests\\app\\src\\"
+      }
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "2.1-dev"

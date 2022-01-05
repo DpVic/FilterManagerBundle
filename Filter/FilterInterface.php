@@ -35,25 +35,19 @@ interface FilterInterface extends
      *
      * @param array $options
      */
-    public function setOptions(array $options);
+    public function setOptions(array $options): void;
 
     /**
      * Resolves filter state by given request.
-     *
-     * @param Request $request
-     *
-     * @return FilterState
      */
-    public function getState(Request $request);
+    public function getState(Request $request): FilterState;
+
 
     /**
      * Modifies search request by given state. Usually should be used to add query or post_filter parameters.
-     *
-     * @param Search        $search  Search request.
-     * @param FilterState   $state   Current filter state.
-     * @param SearchRequest $request State of all filters.
      */
-    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null);
+    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null): void;
+
 
     /**
      * Modifies search request by given state and related search. Usually is used to add aggregations into query.
@@ -61,37 +55,22 @@ interface FilterInterface extends
      * Related search does not include conditions from not related filters. Conditions made by filter
      * itself are also excluded on $relatedSearch. This method normally is called after modifySearch just before search
      * query execution
-     *
-     * @param Search      $search
-     * @param Search      $relatedSearch
-     * @param FilterState $state
-     *
-     * @return mixed
      */
-    public function preProcessSearch(Search $search, Search $relatedSearch, FilterState $state = null);
+    public function preProcessSearch(Search $search, Search $relatedSearch, FilterState $state = null): void;
 
     /**
      * Prepares all needed filter data to pass into view.
-     *
-     * @param DocumentIterator $result Search results.
-     * @param ViewData         $data   Initial view data.
-     *
-     * @return ViewData
      */
-    public function getViewData(DocumentIterator $result, ViewData $data);
+    public function getViewData(DocumentIterator $result, ViewData $data): ViewData;
 
     /**
      * Returns all tags assigned to the filter.
-     *
-     * @return array
      */
-    public function getTags();
+    public function getTags(): array;
 
     /**
-     * Defines whether its necessary to build a related search for
+     * Defines whether it's necessary to build a related search for
      * the filters preProcessSearch() method
-     *
-     * @return bool
      */
-    public function isRelated();
+    public function isRelated(): bool;
 }

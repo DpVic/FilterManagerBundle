@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -19,7 +21,7 @@ class ExcludeRelation implements RelationInterface
     /**
      * @var string[]
      */
-    private $names;
+    private array $names;
 
     /**
      * @param array $names
@@ -32,7 +34,7 @@ class ExcludeRelation implements RelationInterface
     /**
      * {@inheritdoc}
      */
-    public function isRelated($name)
+    public function isRelated(string $name): bool
     {
         return !isset($this->names[$name]);
     }

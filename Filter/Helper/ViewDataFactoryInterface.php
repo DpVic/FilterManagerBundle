@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -20,8 +22,6 @@ interface ViewDataFactoryInterface
 {
     /**
      * Creates instance of specific ViewData.
-     *
-     * @return ViewData
      */
-    public function createViewData();
+    public function createViewData(): ViewData;
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -11,13 +13,13 @@
 
 namespace ONGR\FilterManagerBundle\Filter\Widget\Sort;
 
-use ONGR\ElasticsearchDSL\Search;
 use ONGR\ElasticsearchBundle\Result\DocumentIterator;
+use ONGR\ElasticsearchDSL\Search;
 use ONGR\ElasticsearchDSL\Sort\FieldSort;
 use ONGR\FilterManagerBundle\Filter\FilterState;
 use ONGR\FilterManagerBundle\Filter\Helper\ViewDataFactoryInterface;
-use ONGR\FilterManagerBundle\Filter\ViewData\ChoicesAwareViewData;
 use ONGR\FilterManagerBundle\Filter\ViewData;
+use ONGR\FilterManagerBundle\Filter\ViewData\ChoicesAwareViewData;
 use ONGR\FilterManagerBundle\Filter\Widget\AbstractFilter;
 use ONGR\FilterManagerBundle\Search\SearchRequest;
 
@@ -29,7 +31,7 @@ class Sort extends AbstractFilter implements ViewDataFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null)
+    public function modifySearch(Search $search, FilterState $state = null, SearchRequest $request = null): void
     {
         if ($state && $state->isActive()) {
             $stateValue = $state->getValue();
@@ -52,26 +54,29 @@ class Sort extends AbstractFilter implements ViewDataFactoryInterface
         }
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function preProcessSearch(Search $search, Search $relatedSearch, FilterState $state = null)
+    public function preProcessSearch(Search $search, Search $relatedSearch, FilterState $state = null): void
     {
         // Nothing to do here.
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function createViewData()
-    {
-        return new ChoicesAwareViewData();
-    }
 
     /**
      * {@inheritdoc}
      */
-    public function getViewData(DocumentIterator $result, ViewData $data)
+    public function createViewData(): ChoicesAwareViewData
+    {
+        return new ChoicesAwareViewData();
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getViewData(DocumentIterator $result, ViewData $data): ViewData
     {
         /** @var ChoicesAwareViewData $data */
         foreach ($this->getChoices() as $key => $choice) {
@@ -98,31 +103,34 @@ class Sort extends AbstractFilter implements ViewDataFactoryInterface
         return $data;
     }
 
+
     /**
      * Returns choices.
      *
      * @return array
      */
-    public function getChoices()
+    public function getChoices(): array
     {
         return $this->getOption('choices', []);
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function isRelated()
+    public function isRelated(): bool
     {
         return false;
     }
 
+
     /**
-     * @param string   $key
+     * @param string $key
      * @param ViewData $data
      *
      * @return array
      */
-    protected function getOptionUrlParameters($key, ViewData $data)
+    protected function getOptionUrlParameters(string $key, ViewData $data): array
     {
         $parameters = $data->getResetUrlParameters();
         $parameters[$this->getRequestField()] = $key;
@@ -130,13 +138,14 @@ class Sort extends AbstractFilter implements ViewDataFactoryInterface
         return $parameters;
     }
 
+
     /**
      * Adds sort field parameters into given search object.
      *
      * @param Search $search
-     * @param array  $sortField
+     * @param array $sortField
      */
-    private function addFieldToSort(Search $search, $sortField)
+    private function addFieldToSort(Search $search, array $sortField): void
     {
         $search->addSort(
             new FieldSort(

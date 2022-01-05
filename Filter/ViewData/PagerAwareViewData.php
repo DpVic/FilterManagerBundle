@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -24,50 +26,47 @@ class PagerAwareViewData extends ViewData
     /**
      * @var int Current page.
      */
-    private $currentPage = 1;
+    private int $currentPage = 1;
 
     /**
      * @var int Total amount of items to show.
      */
-    private $totalItems = 1;
+    private int $totalItems = 1;
 
     /**
      * @var int Maximum pages to show.
      */
-    private $maxPages = 10;
+    private int $maxPages = 10;
 
     /**
      * @var int Maximum items show per page.
      */
-    private $itemsPerPage = 12;
+    private int $itemsPerPage = 12;
 
     /**
-     * @var Number of pages to show.
+     * @var int of pages to show.
      */
-    private $numPages;
+    private int $numPages;
+
 
     /**
      * Initializes data for pagination.
-     *
-     * @param $totalItems
-     * @param $currentPage
-     * @param int         $itemsPerPage
-     * @param int         $maxPages
      */
-    public function setData($totalItems, $currentPage, $itemsPerPage = 12, $maxPages = 10)
+    public function setData(int $totalItems, int $currentPage, int $itemsPerPage = 12, int $maxPages = 10)
     {
         $this->totalItems = $totalItems;
         $this->currentPage = $currentPage;
         $this->itemsPerPage = $itemsPerPage;
-        $this->numPages = (int) ceil($this->totalItems/$this->itemsPerPage);
+        $this->numPages = (int)ceil($this->totalItems / $this->itemsPerPage);
 
-        $this->maxPages = $maxPages < 3 ? 3 : $maxPages;
+        $this->maxPages = max($maxPages, 3);
     }
+
 
     /**
      * {@inheritdoc}
      */
-    public function getSerializableData()
+    public function getSerializableData(): array
     {
         $data = parent::getSerializableData();
 
@@ -84,12 +83,13 @@ class PagerAwareViewData extends ViewData
         return $data;
     }
 
+
     /**
      * Get previous page number.
      *
      * @return int|null
      */
-    public function getPreviousPage()
+    public function getPreviousPage(): ?int
     {
         if ($this->currentPage > 1) {
             return $this->currentPage - 1;
@@ -98,22 +98,24 @@ class PagerAwareViewData extends ViewData
         return null;
     }
 
+
     /**
      * Returns current page number.
      *
      * @return int
      */
-    public function getCurrentPage()
+    public function getCurrentPage(): int
     {
         return $this->currentPage;
     }
+
 
     /**
      * Get next page number.
      *
      * @return int|null
      */
-    public function getNextPage()
+    public function getNextPage(): ?int
     {
         if ($this->currentPage < $this->numPages) {
             return $this->currentPage + 1;
@@ -122,62 +124,68 @@ class PagerAwareViewData extends ViewData
         return null;
     }
 
+
     /**
      * Returns the last page number.
      *
      * @return int
      */
-    public function getLastPage()
+    public function getLastPage(): int
     {
-        return ceil($this->totalItems / $this->itemsPerPage);
+        return (int)ceil($this->totalItems / $this->itemsPerPage);
     }
+
 
     /**
      * Returns true if the current page is first.
      *
      * @return bool
      */
-    public function isFirstPage()
+    public function isFirstPage(): bool
     {
         return $this->currentPage == 1;
     }
+
 
     /**
      * Returns the first page number.
      *
      * @return int
      */
-    public function getFirstPage()
+    public function getFirstPage(): int
     {
         return 1;
     }
+
 
     /**
      * Returns true if the current page is last.
      *
      * @return bool
      */
-    public function isLastPage()
+    public function isLastPage(): bool
     {
         return $this->currentPage == $this->getLastPage();
     }
 
+
     /**
      * @return int
      */
-    private function calculateAdjacent()
+    private function calculateAdjacent(): int
     {
         $minus = $this->maxPages === 2 ? 0 : 1;
 
-        return (int) floor(($this->maxPages - $minus) / 2);
+        return (int)floor(($this->maxPages - $minus) / 2);
     }
+
 
     /**
      * Generates a page list.
      *
      * @return array The page list.
      */
-    public function getPages()
+    public function getPages(): array
     {
         // Reserve one position for first/last page
         $this->maxPages--;

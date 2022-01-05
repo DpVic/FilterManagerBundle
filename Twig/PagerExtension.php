@@ -13,80 +13,69 @@ namespace ONGR\FilterManagerBundle\Twig;
 
 use ONGR\FilterManagerBundle\Filter\ViewData\PagerAwareViewData;
 use Symfony\Component\Routing\RouterInterface;
+use Twig\Environment;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 /**
  * PagerExtension extends Twig with pagination capabilities.
  */
-class PagerExtension extends \Twig_Extension
+class PagerExtension extends AbstractExtension
 {
     /**
      * Twig extension name.
      */
     const NAME = 'ongr_pager';
 
-    /**
-     * @var RouterInterface
-     */
-    protected $router;
 
-    /**
-     * @param RouterInterface $router
-     */
+    protected RouterInterface $router;
+
+
+
     public function __construct(RouterInterface $router)
     {
         $this->router = $router;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getFunctions()
+
+
+    public function getFunctions(): array
     {
         return [
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'ongr_paginate',
                 [$this, 'paginate'],
                 ['is_safe' => ['html'], 'needs_environment' => true]
             ),
-            new \Twig_SimpleFunction('ongr_paginate_path', [$this, 'path'], ['is_safe' => []]),
+            new TwigFunction('ongr_paginate_path', [$this, 'path'], ['is_safe' => []]),
         ];
     }
 
+
     /**
      * Renders pagination element.
-     *
-     * @param \Twig_Environment  $env
-     * @param PagerAwareViewData $pager
-     * @param string             $route
-     * @param array              $parameters
-     * @param string             $template
-     *
-     * @return string
      */
     public function paginate(
-        \Twig_Environment $env,
-        $pager,
-        $route,
-        array $parameters = [],
-        $template = 'ONGRFilterManagerBundle:Pager:paginate.html.twig'
-    ) {
+        Environment        $twig,
+        PagerAwareViewData $pager,
+        string             $route,
+        array              $parameters = [],
+                           $template = 'ONGRFilterManagerBundle:Pager:paginate.html.twig'
+    ): string
+    {
 
-        return $env->render(
+        return $twig->render(
             $template,
             ['pager' => $pager, 'route' => $route, 'parameters' => $parameters]
         );
     }
 
+
     /**
      * Generates url to certain page.
      *
-     * @param string $route
-     * @param string $page
-     * @param array  $parameters
-     *
-     * @return string
      */
-    public function path($route, $page, array $parameters = [])
+    public function path(string $route, string $page, array $parameters = []): string
     {
         $fieldName = 'page';
 
@@ -100,10 +89,8 @@ class PagerExtension extends \Twig_Extension
         return $this->router->generate($route, $parameters);
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+
+    public function getName(): string
     {
         return self::NAME;
     }

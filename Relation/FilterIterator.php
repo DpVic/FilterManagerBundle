@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -18,10 +20,7 @@ use Iterator;
  */
 class FilterIterator extends \FilterIterator
 {
-    /**
-     * @var RelationInterface
-     */
-    protected $relation;
+    protected RelationInterface $relation;
 
     /**
      * @param Iterator          $iterator
@@ -36,7 +35,7 @@ class FilterIterator extends \FilterIterator
     /**
      * {@inheritdoc}
      */
-    public function accept()
+    public function accept(): bool
     {
         return $this->relation->isRelated($this->key());
     }

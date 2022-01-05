@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -29,15 +31,14 @@ abstract class AbstractFilter implements FilterInterface
     use DocumentFieldAwareTrait;
     use OptionsAwareTrait;
 
-    /**
-     * @var array
-     */
-    private $tags = [];
+
+    private array $tags = [];
+
 
     /**
      * {@inheritdoc}
      */
-    public function getState(Request $request)
+    public function getState(Request $request): FilterState
     {
         $state = new FilterState();
         $value = $request->get($this->getRequestField());
@@ -53,26 +54,22 @@ abstract class AbstractFilter implements FilterInterface
     }
 
 
-    /**
-     * @return string
-     */
-    public function getTags()
+    public function getTags(): array
     {
         return $this->tags;
     }
 
-    /**
-     * @param string $tags
-     */
-    public function setTags($tags)
+
+    public function setTags(array $tags): void
     {
         $this->tags = $tags;
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function isRelated()
+    public function isRelated(): bool
     {
         return false;
     }

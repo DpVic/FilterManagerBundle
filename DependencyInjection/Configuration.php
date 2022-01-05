@@ -11,9 +11,7 @@
 
 namespace ONGR\FilterManagerBundle\DependencyInjection;
 
-use ONGR\ElasticsearchDSL\Aggregation\TermsAggregation;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
-use Symfony\Component\Config\Definition\Builder\ParentNodeDefinitionInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -25,7 +23,7 @@ class Configuration implements ConfigurationInterface
     /**
      * {@inheritdoc}
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('ongr_filter_manager');
@@ -39,7 +37,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @param ArrayNodeDefinition $rootNode
      */
-    private function addManagersSection(ArrayNodeDefinition $rootNode)
+    private function addManagersSection(ArrayNodeDefinition $rootNode): void
     {
         $rootNode
             ->children()
@@ -68,7 +66,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @param ArrayNodeDefinition $rootNode
      */
-    private function addFiltersSection(ArrayNodeDefinition $rootNode)
+    private function addFiltersSection(ArrayNodeDefinition $rootNode): void
     {
         $rootNode
             ->children()
@@ -100,12 +98,8 @@ class Configuration implements ConfigurationInterface
 
     /**
      * Builds relations config tree for given relation name.
-     *
-     * @param string $relationType
-     *
-     * @return ArrayNodeDefinition
      */
-    private function buildRelationsTree($relationType)
+    private function buildRelationsTree(string $relationType): ArrayNodeDefinition
     {
         $filter = new ArrayNodeDefinition($relationType);
 

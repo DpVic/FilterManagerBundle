@@ -25,7 +25,7 @@ class FilterState implements SerializableInterface
     /**
      * @var bool True if filter is currently.
      */
-    private $active = false;
+    private bool $active = false;
 
     /**
      * @var mixed Represents user selected value for filtering.
@@ -35,28 +35,25 @@ class FilterState implements SerializableInterface
     /**
      * @var array Url parameters related *only* to given filter.
      */
-    private $urlParameters = [];
+    private array $urlParameters = [];
 
     /**
      * @var string Filter name.
      */
-    private $name;
+    private string $name;
 
-    /**
-     * @return bool
-     */
-    public function isActive()
+
+    public function isActive(): bool
     {
         return $this->active;
     }
 
-    /**
-     * @param bool $active
-     */
-    public function setActive($active)
+
+    public function setActive(bool $active): void
     {
         $this->active = $active;
     }
+
 
     /**
      * @return mixed
@@ -66,6 +63,7 @@ class FilterState implements SerializableInterface
         return $this->value;
     }
 
+
     /**
      * @param mixed $value
      */
@@ -74,42 +72,35 @@ class FilterState implements SerializableInterface
         $this->value = $value;
     }
 
-    /**
-     * @return array
-     */
-    public function getUrlParameters()
+
+    public function getUrlParameters(): array
     {
         return $this->urlParameters;
     }
 
-    /**
-     * @param array $urlParameters
-     */
-    public function setUrlParameters(array $urlParameters)
+
+    public function setUrlParameters(array $urlParameters): void
     {
         $this->urlParameters = $urlParameters;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName($name)
+
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function getSerializableData()
+    public function getSerializableData(): array
     {
         return [
             'active' => $this->active,

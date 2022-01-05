@@ -12,31 +12,21 @@
 namespace ONGR\FilterManagerBundle\Event;
 
 use ONGR\ElasticsearchBundle\Result\DocumentIterator;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class SearchResponseEvent extends Event
 {
-    /**
-     * @var DocumentIterator
-     */
-    private $documentIterator;
 
-    /**
-     * Constructor
-     *
-     * @param DocumentIterator $documentIterator
-     */
+    private DocumentIterator $documentIterator;
+
+
     public function __construct(DocumentIterator $documentIterator)
     {
         $this->documentIterator = $documentIterator;
     }
 
-    /**
-     * Returns document iterator
-     *
-     * @return DocumentIterator
-     */
-    public function getDocumentIterator()
+
+    public function getDocumentIterator(): DocumentIterator
     {
         return $this->documentIterator;
     }

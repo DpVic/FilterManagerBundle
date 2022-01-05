@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -16,23 +18,17 @@ namespace ONGR\FilterManagerBundle\Filter\Helper;
  */
 trait RequestFieldAwareTrait
 {
-    /**
-     * @var string
-     */
-    private $requestField;
 
-    /**
-     * @return string
-     */
-    public function getRequestField()
+    private string $requestField;
+
+
+    public function getRequestField(): string
     {
         return $this->requestField;
     }
 
-    /**
-     * @param string $requestField
-     */
-    public function setRequestField($requestField)
+
+    public function setRequestField(string $requestField): void
     {
         $this->requestField = $requestField;
     }

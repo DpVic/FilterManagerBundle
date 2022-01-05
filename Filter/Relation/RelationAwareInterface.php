@@ -20,15 +20,11 @@ interface RelationAwareInterface
 {
     /**
      * Returns relation to other filters in terms of search conditions.
-     *
-     * @return RelationInterface
      */
-    public function getSearchRelation();
+    public function getSearchRelation(): ?RelationInterface;
 
     /**
      * Returns relation to other filters in terms of filter reset url parameters.
-     *
-     * @return RelationInterface
      */
-    public function getResetRelation();
+    public function getResetRelation(): ?RelationInterface;
 }

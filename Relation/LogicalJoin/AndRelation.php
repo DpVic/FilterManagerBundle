@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -21,20 +23,22 @@ class AndRelation implements RelationInterface
     /**
      * @var RelationInterface[]
      */
-    private $relations;
+    private array $relations;
+
 
     /**
      * @param RelationInterface[] $relations
      */
-    public function __construct($relations = [])
+    public function __construct(array $relations = [])
     {
         $this->relations = $relations;
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function isRelated($name)
+    public function isRelated($name): bool
     {
         foreach ($this->relations as $relation) {
             if (isset($relation) && $relation->isRelated($name) === false) {
@@ -45,10 +49,8 @@ class AndRelation implements RelationInterface
         return true;
     }
 
-    /**
-     * @param RelationInterface $relation
-     */
-    public function addRelation(RelationInterface $relation = null)
+
+    public function addRelation(RelationInterface $relation = null): void
     {
         $this->relations[] = $relation;
     }

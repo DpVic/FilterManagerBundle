@@ -13,44 +13,31 @@ namespace ONGR\FilterManagerBundle\Event;
 
 use ONGR\ElasticsearchDSL\Search;
 use ONGR\FilterManagerBundle\Filter\FilterState;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class PreProcessSearchEvent extends Event
 {
-    /**
-     * @var FilterState
-     */
-    private $state;
 
-    /**
-     * @var Search
-     */
-    private $relatedSearch;
+    private FilterState $state;
 
-    /**
-     * Constructor
-     *
-     * @param FilterState $state
-     * @param Search $relatedSearch
-     */
+
+    private Search $relatedSearch;
+
+
     public function __construct(FilterState $state, Search $relatedSearch)
     {
         $this->state = $state;
         $this->relatedSearch = $relatedSearch;
     }
 
-    /**
-     * @return FilterState
-     */
-    public function getState()
+
+    public function getState(): FilterState
     {
         return $this->state;
     }
 
-    /**
-     * @return Search
-     */
-    public function getRelatedSearch()
+
+    public function getRelatedSearch(): Search
     {
         return $this->relatedSearch;
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the ONGR package.
  *
@@ -21,20 +23,20 @@ class ChoicesAwareViewData extends ViewData
     /**
      * @var ChoiceAwareViewData[]
      */
-    private $choices = [];
+    private array $choices = [];
 
     /**
-     * @return ViewData\ChoiceAwareViewData[]
+     * @return ChoiceAwareViewData[]
      */
-    public function getChoices()
+    public function getChoices(): array
     {
         return $this->choices;
     }
 
     /**
-     * @param ViewData\ChoiceAwareViewData[] $choices
+     * @param ChoiceAwareViewData[] $choices
      */
-    public function setChoices($choices)
+    public function setChoices(array $choices): void
     {
         $this->choices = $choices;
     }
@@ -42,7 +44,7 @@ class ChoicesAwareViewData extends ViewData
     /**
      * @param ChoiceAwareViewData $choice
      */
-    public function addChoice(ChoiceAwareViewData $choice)
+    public function addChoice(ChoiceAwareViewData $choice): void
     {
         $this->choices[] = $choice;
     }
@@ -50,7 +52,7 @@ class ChoicesAwareViewData extends ViewData
     /**
      * {@inheritdoc}
      */
-    public function getSerializableData()
+    public function getSerializableData(): array
     {
         $data = parent::getSerializableData();
 

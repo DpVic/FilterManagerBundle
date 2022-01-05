@@ -12,31 +12,21 @@
 namespace ONGR\FilterManagerBundle\Event;
 
 use ONGR\FilterManagerBundle\Search\SearchRequest;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class PreSearchEvent extends Event
 {
-    /**
-     * @var SearchRequest
-     */
-    private $searchRequest;
 
-    /**
-     * Constructor
-     *
-     * @param SearchRequest $searchRequest
-     */
+    private SearchRequest $searchRequest;
+
+
     public function __construct(SearchRequest $searchRequest)
     {
         $this->searchRequest = $searchRequest;
     }
 
-    /**
-     * Returns search request
-     *
-     * @return SearchRequest
-     */
-    public function getSearchRequest()
+    
+    public function getSearchRequest(): SearchRequest
     {
         return $this->searchRequest;
     }
