@@ -11,10 +11,10 @@
 
 namespace ONGR\FilterManagerBundle\Search;
 
-use JMS\Serializer\Serializer;
-use ONGR\ElasticsearchDSL\Search;
-use ONGR\ElasticsearchBundle\Service\Repository;
+use JMS\Serializer\SerializerInterface;
 use ONGR\ElasticsearchBundle\Result\DocumentIterator;
+use ONGR\ElasticsearchBundle\Service\Repository;
+use ONGR\ElasticsearchDSL\Search;
 use ONGR\FilterManagerBundle\Event\PreProcessSearchEvent;
 use ONGR\FilterManagerBundle\Event\PreSearchEvent;
 use ONGR\FilterManagerBundle\Event\SearchResponseEvent;
@@ -34,51 +34,37 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class FilterManager implements FilterManagerInterface
 {
-    /**
-     * @var FilterContainer
-     */
-    private $container;
+    private FilterContainer $container;
 
-    /**
-     * @var Repository
-     */
-    private $repository;
+    private Repository $repository;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @var Serializer
-     */
-    private $serializer;
+    private SerializerInterface $serializer;
 
-    /**
-     * @param FilterContainer          $container
-     * @param Repository               $repository
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param Serializer $serializer
-     */
+
     public function __construct(
-        FilterContainer $container,
-        Repository $repository,
+        FilterContainer          $container,
+        Repository               $repository,
         EventDispatcherInterface $eventDispatcher,
-        $serializer
-    ) {
+        SerializerInterface      $serializer
+    )
+    {
         $this->container = $container;
         $this->repository = $repository;
         $this->eventDispatcher = $eventDispatcher;
         $this->serializer = $serializer;
     }
 
+
     /**
      * {@inheritdoc}
      */
-    public function handleRequest(Request $request)
+    public function handleRequest(Request $request): SearchResponse
     {
         return $this->search($this->container->buildSearchRequest($request));
     }
+
 
     /**
      * Executes search.
@@ -87,9 +73,9 @@ class FilterManager implements FilterManagerInterface
      *
      * @return SearchResponse
      */
-    public function search(SearchRequest $request)
+    public function search(SearchRequest $request): SearchResponse
     {
-        $this->eventDispatcher->dispatch(ONGRFilterManagerEvents::PRE_SEARCH, new PreSearchEvent($request));
+        $this->eventDispatcher->dispatch(new PreSearchEvent($request), ONGRFilterManagerEvents::PRE_SEARCH);
 
         $search = $this->container->buildSearch($request);
 
@@ -106,8 +92,8 @@ class FilterManager implements FilterManagerInterface
             }
 
             $this->eventDispatcher->dispatch(
-                ONGRFilterManagerEvents::PRE_PROCESS_SEARCH,
-                new PreProcessSearchEvent($request->get($name), $relatedSearch)
+                new PreProcessSearchEvent($request->get($name), $relatedSearch),
+                ONGRFilterManagerEvents::PRE_PROCESS_SEARCH
             );
 
             $filter->preProcessSearch(
@@ -118,7 +104,10 @@ class FilterManager implements FilterManagerInterface
         }
 
         $result = $this->repository->findDocuments($search);
-        $this->eventDispatcher->dispatch(ONGRFilterManagerEvents::SEARCH_RESPONSE, new SearchResponseEvent($result));
+        $this->eventDispatcher->dispatch(
+            new SearchResponseEvent($result),
+            ONGRFilterManagerEvents::SEARCH_RESPONSE
+        );
 
         return new SearchResponse(
             $this->getFiltersViewData($result, $request),
@@ -128,16 +117,17 @@ class FilterManager implements FilterManagerInterface
         );
     }
 
+
     /**
      * Composes url parameters related to given filter.
      *
-     * @param SearchRequest   $request Search request.
-     * @param FilterInterface $filter  Filter.
-     * @param array           $exclude Additional names of filters to exclude.
+     * @param SearchRequest $request Search request.
+     * @param FilterInterface $filter Filter.
+     * @param array $exclude Additional names of filters to exclude.
      *
      * @return array
      */
-    protected function composeUrlParameters(SearchRequest $request, FilterInterface $filter = null, $exclude = [])
+    protected function composeUrlParameters(SearchRequest $request, FilterInterface $filter = null, $exclude = []): array
     {
         $out = [];
 
@@ -161,15 +151,16 @@ class FilterManager implements FilterManagerInterface
         return $out;
     }
 
+
     /**
      * Creates view data for each filter.
      *
      * @param DocumentIterator $result
-     * @param SearchRequest    $request
+     * @param SearchRequest $request
      *
      * @return ViewData[]
      */
-    protected function getFiltersViewData(DocumentIterator $result, SearchRequest $request)
+    protected function getFiltersViewData(DocumentIterator $result, SearchRequest $request): array
     {
         $out = [];
 

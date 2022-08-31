@@ -25,5 +25,5 @@ interface FilterManagerInterface
      *
      * @return SearchResponse
      */
-    public function handleRequest(Request $request);
+    public function handleRequest(Request $request): SearchResponse;
 }
