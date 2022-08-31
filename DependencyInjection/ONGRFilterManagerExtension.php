@@ -11,12 +11,8 @@
 
 namespace ONGR\FilterManagerBundle\DependencyInjection;
 
-use ONGR\FilterManagerBundle\DependencyInjection\Filter\AbstractFilterFactory;
-use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
@@ -31,7 +27,7 @@ class ONGRFilterManagerExtension extends Extension
     /**
      * {@inheritdoc}
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
@@ -45,24 +41,17 @@ class ONGRFilterManagerExtension extends Extension
 
     /**
      * Formats filter service id from given name.
-     *
-     * @param string $name Filter name.
-     *
-     * @return string
      */
-    public static function getFilterId($name)
+    public static function getFilterId(string $name): string
     {
         return sprintf(self::PREFIX.'.filter.%s', $name);
     }
 
+
     /**
      * Formats filter manager service id from given name.
-     *
-     * @param string $name Filter manager name.
-     *
-     * @return string
      */
-    public static function getFilterManagerId($name = 'default')
+    public static function getFilterManagerId(string $name = 'default'): string
     {
         return sprintf(self::PREFIX.'.manager.%s', $name);
     }

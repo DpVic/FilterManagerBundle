@@ -88,7 +88,7 @@ class FilterContainer extends ParameterBag
      *
      * @return SearchRequest
      */
-    public function buildSearchRequest(Request $request)
+    public function buildSearchRequest(Request $request): SearchRequest
     {
         $search = new SearchRequest();
         /** @var FilterInterface[] $filters */
@@ -111,7 +111,7 @@ class FilterContainer extends ParameterBag
      *
      * @return Search
      */
-    public function buildSearch(SearchRequest $request, $filters = null)
+    public function buildSearch(SearchRequest $request, $filters = null): Search
     {
         $search = new Search();
 

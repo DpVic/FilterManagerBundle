@@ -12,26 +12,22 @@
 namespace ONGR\FilterManagerBundle\Twig;
 
 use ONGR\FilterManagerBundle\Filter\ViewData\PagerAwareViewData;
+use Symfony\Bundle\TwigBundle\DependencyInjection\TwigExtension;
 use Symfony\Component\Routing\RouterInterface;
+use Twig\Environment;
+use Twig\TwigFunction;
 
 /**
  * PagerExtension extends Twig with pagination capabilities.
  */
-class PagerExtension extends \Twig_Extension
+class PagerExtension extends TwigExtension
 {
-    /**
-     * Twig extension name.
-     */
+
     const NAME = 'ongr_pager';
 
-    /**
-     * @var RouterInterface
-     */
-    protected $router;
+    protected RouterInterface $router;
 
-    /**
-     * @param RouterInterface $router
-     */
+
     public function __construct(RouterInterface $router)
     {
         $this->router = $router;
@@ -43,34 +39,26 @@ class PagerExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'ongr_paginate',
                 [$this, 'paginate'],
                 ['is_safe' => ['html'], 'needs_environment' => true]
             ),
-            new \Twig_SimpleFunction('ongr_paginate_path', [$this, 'path'], ['is_safe' => []]),
+            new TwigFunction('ongr_paginate_path', [$this, 'path'], ['is_safe' => []]),
         ];
     }
 
     /**
      * Renders pagination element.
-     *
-     * @param \Twig_Environment  $env
-     * @param PagerAwareViewData $pager
-     * @param string             $route
-     * @param array              $parameters
-     * @param string             $template
-     *
-     * @return string
      */
     public function paginate(
-        \Twig_Environment $env,
+        Environment $env,
         $pager,
         $route,
         array $parameters = [],
         $template = 'ONGRFilterManagerBundle:Pager:paginate.html.twig'
-    ) {
-
+    ): string
+    {
         return $env->render(
             $template,
             ['pager' => $pager, 'route' => $route, 'parameters' => $parameters]
@@ -86,7 +74,7 @@ class PagerExtension extends \Twig_Extension
      *
      * @return string
      */
-    public function path($route, $page, array $parameters = [])
+    public function path($route, $page, array $parameters = []): string
     {
         $fieldName = 'page';
 

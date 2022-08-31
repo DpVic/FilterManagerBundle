@@ -12,6 +12,8 @@
 namespace ONGR\FilterManagerBundle\DependencyInjection\Compiler;
 
 use ONGR\FilterManagerBundle\DependencyInjection\ONGRFilterManagerExtension;
+use ONGR\FilterManagerBundle\Search\FilterContainer;
+use ONGR\FilterManagerBundle\Search\FilterManager;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -68,7 +70,7 @@ class FilterPass implements CompilerPassInterface
         }
 
         foreach ($container->getParameter('ongr_filter_manager.managers') as $managerName => $managerOptions) {
-            $filterContainer = new Definition('ONGR\FilterManagerBundle\Search\FilterContainer');
+            $filterContainer = new Definition(FilterContainer::class);
 
             if (isset($managerOptions['filters'])) {
                 foreach ($managerOptions['filters'] as $filter) {
@@ -80,7 +82,7 @@ class FilterPass implements CompilerPassInterface
             }
 
             $managerDefinition = new Definition(
-                'ONGR\FilterManagerBundle\Search\FilterManager',
+                FilterManager::class,
                 [
                     $filterContainer,
                     new Reference($managerOptions['repository']),
@@ -93,15 +95,16 @@ class FilterPass implements CompilerPassInterface
         }
     }
 
+
     /**
      * Adds relation to filter.
      *
      * @param Definition $definition
-     * @param array      $filter
-     * @param string     $urlType
-     * @param string     $relationType
+     * @param array $filter
+     * @param string $urlType
+     * @param string $relationType
      */
-    private function addRelation(Definition $definition, $filter, $urlType, $relationType)
+    private function addRelation(Definition $definition, array $filter, string $urlType, string $relationType)
     {
         if (empty($filter['relations'][$urlType][$relationType])) {
             return;

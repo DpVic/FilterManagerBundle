@@ -12,26 +12,24 @@
 namespace ONGR\FilterManagerBundle\Controller;
 
 use ONGR\FilterManagerBundle\DependencyInjection\ONGRFilterManagerExtension;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Class ManagerController.
- */
-class ManagerController extends Controller
+
+class ManagerController extends AbstractController
 {
     /**
      * Renders view with filter manager response.
      *
-     * @param Request $request     Request.
-     * @param string  $managerName Filter manager name.
-     * @param string  $template    Template name.
+     * @param Request $request Request.
+     * @param string $managerName Filter manager name.
+     * @param string $template Template name.
      *
      * @return Response
      */
-    public function managerAction(Request $request, $managerName, $template)
+    public function managerAction(Request $request, string $managerName, string $template): Response
     {
         return $this->render(
             $template,
@@ -39,15 +37,16 @@ class ManagerController extends Controller
         );
     }
 
+
     /**
      * Returns search response results from filter manager.
      *
      * @param Request $request Request.
-     * @param string  $managerName    Filter manager name.
+     * @param string $managerName Filter manager name.
      *
      * @return array
      */
-    protected function getFilterManagerResponse(Request $request, $managerName)
+    protected function getFilterManagerResponse(Request $request, string $managerName): array
     {
         return [
             'filter_manager' => $this->get(ONGRFilterManagerExtension::getFilterManagerId($managerName))
@@ -55,15 +54,16 @@ class ManagerController extends Controller
         ];
     }
 
+
     /**
      * Returns JSON response with search response data.
      *
      * @param Request $request Request.
-     * @param string  $name    Filter manager name.
+     * @param string $managerName Filter manager name.
      *
      * @return JsonResponse
      */
-    public function jsonAction(Request $request, $managerName)
+    public function jsonAction(Request $request, string $managerName): JsonResponse
     {
         $data = $this->get(ONGRFilterManagerExtension::getFilterManagerId($managerName))
             ->handleRequest($request)
