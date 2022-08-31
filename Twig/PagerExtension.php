@@ -11,16 +11,15 @@
 
 namespace ONGR\FilterManagerBundle\Twig;
 
-use ONGR\FilterManagerBundle\Filter\ViewData\PagerAwareViewData;
-use Symfony\Bundle\TwigBundle\DependencyInjection\TwigExtension;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
+use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 /**
  * PagerExtension extends Twig with pagination capabilities.
  */
-class PagerExtension extends TwigExtension
+class PagerExtension extends AbstractExtension
 {
 
     const NAME = 'ongr_pager';
@@ -32,6 +31,7 @@ class PagerExtension extends TwigExtension
     {
         $this->router = $router;
     }
+
 
     /**
      * {@inheritdoc}
@@ -48,15 +48,16 @@ class PagerExtension extends TwigExtension
         ];
     }
 
+
     /**
      * Renders pagination element.
      */
     public function paginate(
         Environment $env,
-        $pager,
-        $route,
-        array $parameters = [],
-        $template = 'ONGRFilterManagerBundle:Pager:paginate.html.twig'
+                    $pager,
+                    $route,
+        array       $parameters = [],
+                    $template = 'ONGRFilterManagerBundle:Pager:paginate.html.twig'
     ): string
     {
         return $env->render(
@@ -65,12 +66,13 @@ class PagerExtension extends TwigExtension
         );
     }
 
+
     /**
      * Generates url to certain page.
      *
      * @param string $route
      * @param string $page
-     * @param array  $parameters
+     * @param array $parameters
      *
      * @return string
      */
@@ -87,6 +89,7 @@ class PagerExtension extends TwigExtension
 
         return $this->router->generate($route, $parameters);
     }
+
 
     /**
      * @return string
